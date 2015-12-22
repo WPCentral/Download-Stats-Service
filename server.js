@@ -41,6 +41,23 @@ app.get( '/count/:version', function(req, res) {
 	});
 });
 
+app.get( '/versions', function(req, res) {
+	pool.getConnection(function(err, connection) {
+		var sql     = "SELECT DISTINCT version FROM downloads";
+
+		connection.query( sql, function(err, rows, fields) {
+			if ( ! err && rows.length > 0 ) {
+				res.json(rows);
+			}
+			else {
+				res.json({});
+			}
+
+			connection.release();
+		});
+	});
+});
+
 app.use(function(req, res, next) {
 	res.status(404).json({
 		'error': "Route doesn;'t exist"
