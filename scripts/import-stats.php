@@ -9,7 +9,6 @@ try {
 }
 
 
-$date     = strtotime('2012-05-29');
 $date_end = strtotime('now');
 $types    = [
 	//'wordpress', Doesn't have the date argument
@@ -18,6 +17,8 @@ $types    = [
 ];
 
 foreach ( $types as $type ) {
+	$date = strtotime('2012-05-29');
+
 	while ( $date <= $date_end ) {
 		// Build url
 		$url = 'http://api.wordpress.org/stats/' . $type . '/1.0/?day=' . date( "Y-m-d", $date );
