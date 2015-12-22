@@ -1,7 +1,7 @@
 <?php
 
-$dsn = 'mysql:dbname=wpcentral_stats;host=127.0.0.1';
-$user = 'username';
+$dsn = 'mysql:dbname=wpcentral_stats;host=localhost';
+$user = 'wpcentral_stats';
 $password = 'password';
 
 function get_wp_version() {

@@ -1,5 +1,5 @@
 <?php
-include 'config.php';
+include dirname( dirname(__FILE__) ) . '/config.php';
 
 $url = 'http://wordpress.org/download/counter/?ajaxupdate=1&time=' . time();
 
