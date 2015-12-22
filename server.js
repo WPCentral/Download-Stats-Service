@@ -49,7 +49,7 @@ app.get( '/count-history/:version', function(req, res) {
 
 		connection.query( sql, function(err, rows, fields) {
 			if ( ! err ) {
-				res.json(cache);
+				res.json(rows);
 			}
 			else {
 				res.json({});
