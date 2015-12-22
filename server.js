@@ -52,7 +52,7 @@ app.get( '/count-history/:version', function(req, res) {
 				res.json(rows);
 			}
 			else {
-				res.json({});
+				res.json([]);
 			}
 
 			connection.release();
@@ -67,12 +67,12 @@ app.get( '/count-stats/:version', function(req, res) {
 		sql         = mysql.format(sql, inserts);
 
 		connection.query( sql, function(err, rows, fields) {
-			if ( ! err ) {
-				var data = {
-					'days':  [ 0, 0, 0, 0, 0, 0, 0 ],
-					'hours': [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
-				}
+			var data = {
+				'days':  [ 0, 0, 0, 0, 0, 0, 0 ],
+				'hours': [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+			}
 
+			if ( ! err ) {
 				for (var row_id in rows) {
 					var row = rows[ row_id ];
 
@@ -83,7 +83,7 @@ app.get( '/count-stats/:version', function(req, res) {
 				res.json(data);
 			}
 			else {
-				res.json({});
+				res.json(data);
 			}
 
 			connection.release();
@@ -102,7 +102,7 @@ app.get( '/last-7days/:version', function(req, res) {
 				res.json(rows);
 			}
 			else {
-				res.json({});
+				res.json([]);
 			}
 
 			connection.release();
@@ -112,14 +112,14 @@ app.get( '/last-7days/:version', function(req, res) {
 
 app.get( '/versions', function(req, res) {
 	pool.getConnection(function(err, connection) {
-		var sql     = "SELECT DISTINCT version FROM downloads";
+		var sql = "SELECT DISTINCT version FROM downloads";
 
 		connection.query( sql, function(err, rows, fields) {
 			if ( ! err ) {
 				res.json(rows);
 			}
 			else {
-				res.json({});
+				res.json([]);
 			}
 
 			connection.release();
