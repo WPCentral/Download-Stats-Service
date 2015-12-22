@@ -110,6 +110,25 @@ app.get( '/last-7days/:version', function(req, res) {
 	});
 });
 
+app.get( '/releases/:version', function(req, res) {
+	pool.getConnection(function(err, connection) {
+		var sql     = "SELECT * FROM releases WHERE major = ? ORDER BY minor ASC";
+		var inserts = [ req.params.version ];
+		sql         = mysql.format(sql, inserts);
+
+		connection.query( sql, function(err, rows, fields) {
+			if ( ! err ) {
+				res.json(rows);
+			}
+			else {
+				res.json([]);
+			}
+
+			connection.release();
+		});
+	});
+});
+
 app.get( '/versions', function(req, res) {
 	pool.getConnection(function(err, connection) {
 		var sql = "SELECT DISTINCT version FROM downloads";
