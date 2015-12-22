@@ -115,7 +115,7 @@ app.get( '/versions', function(req, res) {
 		var sql     = "SELECT DISTINCT version FROM downloads";
 
 		connection.query( sql, function(err, rows, fields) {
-			if ( ! err && rows.length > 0 ) {
+			if ( ! err ) {
 				res.json(rows);
 			}
 			else {
