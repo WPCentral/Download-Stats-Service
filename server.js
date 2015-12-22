@@ -60,6 +60,37 @@ app.get( '/count-history/:version', function(req, res) {
 	});
 });
 
+app.get( '/count-stats/:version', function(req, res) {
+	pool.getConnection(function(err, connection) {
+		var sql     = "SELECT ( MAX(count) - MIN(count) ) as downloads, WEEKDAY( date_gmt ) as weekday, HOUR( date_gmt ) as hour FROM downloads WHERE version = ? GROUP BY YEAR(date_gmt), MONTH(date_gmt), DATE(date_gmt), HOUR(date_gmt)";
+		var inserts = [ req.params.version ];
+		sql         = mysql.format(sql, inserts);
+
+		connection.query( sql, function(err, rows, fields) {
+			if ( ! err ) {
+				var data = {
+					'days':  [ 0, 0, 0, 0, 0, 0, 0 ],
+					'hours': [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+				}
+
+				for (var row_id in rows) {
+					var row = rows[ row_id ];
+
+					data.days[ row.weekday ] = data.days[ row.weekday ] + row.downloads;
+					data.hours[ row.hour ]   = data.hours[ row.hour ] + row.downloads;
+				}
+
+				res.json(data);
+			}
+			else {
+				res.json({});
+			}
+
+			connection.release();
+		});
+	});
+});
+
 app.get( '/versions', function(req, res) {
 	pool.getConnection(function(err, connection) {
 		var sql     = "SELECT DISTINCT version FROM downloads";
