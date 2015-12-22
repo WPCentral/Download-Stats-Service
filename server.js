@@ -43,7 +43,7 @@ app.get( '/count/:version', function(req, res) {
 
 app.get( '/count-history/:version', function(req, res) {
 	pool.getConnection(function(err, connection) {
-		var sql     = "SELECT MAX(count) as count, Date(date_gmt) as date, date_format(date_gmt,'%m/%d/%Y') as date_display FROM downloads WHERE version = ? GROUP BY YEAR(date_gmt), MONTH(date_gmt), DATE(date_gmt) ORDER BY date_gmt";
+		var sql     = "SELECT MAX(count) as count, date_format(date_gmt,'%Y-%m-%d') as date FROM downloads WHERE version = ? GROUP BY YEAR(date_gmt), MONTH(date_gmt), DATE(date_gmt) ORDER BY date_gmt";
 		var inserts = [ req.params.version ];
 		sql         = mysql.format(sql, inserts);
 
