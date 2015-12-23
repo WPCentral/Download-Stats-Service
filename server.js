@@ -148,7 +148,7 @@ app.get( '/stats-history/:type', function(req, res) {
 		var sql  = "SELECT DATE_FORMAT(day,'%X W%V') AS date, version, AVG(count) AS count FROM versions ";
 			sql += "WHERE TYPE=? AND VERSION NOT IN (?) ";
 			sql += "GROUP BY DATE_FORMAT(day,'%X W%V'), version ";
-			sql += "ORDER BY day"
+			sql += "ORDER BY day, INET_ATON(SUBSTRING_INDEX(CONCAT(version,'.0'),'.',2))"
 
 		var inserts = [ req.params.type, skipped_versions ];
 		sql         = mysql.format(sql, inserts);
