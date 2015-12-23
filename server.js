@@ -129,6 +129,54 @@ app.get( '/stats/:type', function(req, res) {
 	});
 });
 
+app.get( '/stats-history/:type', function(req, res) {
+	pool.getConnection(function(err, connection) {
+		var skipped_versions = [];
+
+		switch(req.params.type) {
+			case 'wordpress':
+				skipped_versions = ['2.7', '2.8', '2.9'];
+				break;
+			case 'php':
+				skipped_versions = ['4.3', '4.4', '5.0', '5.7'];
+				break;
+			case 'mysql':
+				skipped_versions = ['3.23', '4.0', '4.1', '5.', '5.13', '5.2', '5.3', '5.4', '5.7'];
+				break;
+		}
+
+		var sql  = "SELECT DATE_FORMAT(day,'%X W%V') AS date, version, AVG(count) AS count FROM versions ";
+			sql += "WHERE TYPE=? AND VERSION NOT IN (?) ";
+			sql += "GROUP BY DATE_FORMAT(day,'%X W%V'), version ";
+			sql += "ORDER BY day"
+
+		var inserts = [ req.params.type, skipped_versions ];
+		sql         = mysql.format(sql, inserts);
+
+		connection.query( sql, function(err, rows, fields) {
+			if ( ! err ) {
+				var data = {};
+
+				rows.forEach(function(entry) {
+					if ( ! data[ entry.date ] ) {
+						data[ entry.date ] = {};
+					}
+
+					data[ entry.date ].date             = entry.date;
+					data[ entry.date ][ entry.version ] = entry.count;
+				});
+
+				res.json( array_values(data) );
+			}
+			else {
+				res.json([]);
+			}
+
+			connection.release();
+		});
+	});
+});
+
 app.get( '/releases/:version', function(req, res) {
 	pool.getConnection(function(err, connection) {
 		var sql     = "SELECT * FROM releases WHERE major = ? ORDER BY minor ASC";
@@ -170,3 +218,17 @@ app.use(function(req, res, next) {
 		'error': "Route doesn;'t exist"
 	});
 });
+
+
+
+
+
+function array_values(input) {
+	var tmp_arr = [], key = '';
+
+	for (key in input) {
+		tmp_arr[tmp_arr.length] = input[key];
+	}
+
+	return tmp_arr;
+}
