@@ -110,6 +110,25 @@ app.get( '/last-7days/:version', function(req, res) {
 	});
 });
 
+app.get( '/stats/:type', function(req, res) {
+	pool.getConnection(function(err, connection) {
+		var sql     = "SELECT count as value, version as label FROM versions WHERE day = (SELECT day FROM versions WHERE type=? ORDER BY day DESC LIMIT 1) AND type=?";
+		var inserts = [ req.params.type, req.params.type ];
+		sql         = mysql.format(sql, inserts);
+
+		connection.query( sql, function(err, rows, fields) {
+			if ( ! err ) {
+				res.json(rows);
+			}
+			else {
+				res.json([]);
+			}
+
+			connection.release();
+		});
+	});
+});
+
 app.get( '/releases/:version', function(req, res) {
 	pool.getConnection(function(err, connection) {
 		var sql     = "SELECT * FROM releases WHERE major = ? ORDER BY minor ASC";
