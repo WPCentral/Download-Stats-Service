@@ -17,7 +17,7 @@ var pool = mysql.createPool({
 });
 
 pool.on('enqueue', function () {
-	log_error('Waiting for available connection slot');
+	console.log('Waiting for available connection slot');
 });
 
 app.get( '/count/:version', function(req, res) {
