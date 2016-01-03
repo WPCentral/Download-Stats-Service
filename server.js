@@ -135,7 +135,7 @@ app.get( '/stats-history/:type', function(req, res) {
 
 		switch(req.params.type) {
 			case 'wordpress':
-				skipped_versions = ['2.7', '2.8', '2.9'];
+				skipped_versions = ['2.7', '2.8', '2.9', '4.5', '4.6'];
 				break;
 			case 'php':
 				skipped_versions = ['4.3', '4.4', '5.0', '5.7'];
