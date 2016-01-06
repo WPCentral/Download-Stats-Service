@@ -215,7 +215,9 @@ app.get( '/versions', function(req, res) {
 
 app.get( '/versions/:version', function(req, res) {
 	pool.getConnection(function(err, connection) {
-		var sql     = "SELECT *, TIMESTAMPDIFF(SECOND,time_start,time_end) AS lifetime FROM version_data WHERE version = ?";
+		var sql     = "SELECT *, TIMESTAMPDIFF(SECOND,time_start,time_end) AS lifetime, "
+		sql        += "date_format(time_start,'%Y-%m-%d %H:%i') as time_start, date_format(time_end,'%Y-%m-%d %H:%i') as time_end "
+		sql        += "FROM version_data WHERE version = ?";
 		var inserts = [ req.params.version ];
 		sql         = mysql.format(sql, inserts);
 
