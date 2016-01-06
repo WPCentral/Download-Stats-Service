@@ -213,6 +213,25 @@ app.get( '/versions', function(req, res) {
 	});
 });
 
+app.get( '/versions/:version', function(req, res) {
+	pool.getConnection(function(err, connection) {
+		var sql     = "SELECT *, TIMESTAMPDIFF(SECOND,time_start,time_end) AS lifetime FROM version_data WHERE version = ?";
+		var inserts = [ req.params.version ];
+		sql         = mysql.format(sql, inserts);
+
+		connection.query( sql, function(err, rows, fields) {
+			if ( ! err ) {
+				res.json(rows[0]);
+			}
+			else {
+				res.json({});
+			}
+
+			connection.release();
+		});
+	});
+});
+
 app.use(function(req, res, next) {
 	res.status(404).json({
 		'error': "Route doesn;'t exist"
