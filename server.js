@@ -141,7 +141,7 @@ app.get( '/stats-history/:type', function(req, res) {
 				skipped_versions = ['4.3', '4.4', '5.0', '5.7'];
 				break;
 			case 'mysql':
-				skipped_versions = ['3.23', '4.0', '4.1', '5.', '5.13', '5.2', '5.3', '5.4', '5.7'];
+				skipped_versions = ['3.23', '4.0', '4.1', '5.', '5.13', '5.2', '5.3', '5.4'];
 				break;
 		}
 
